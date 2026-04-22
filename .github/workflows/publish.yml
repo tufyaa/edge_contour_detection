@@ -1,0 +1,109 @@
+name: build-publish-release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build package and docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v8
+      - name: Install Python
+        run: uv python install 3.12
+      - name: Sync dependencies
+        run: uv sync --locked --all-groups
+      - name: Run tests
+        run: uv run poe test-fast
+      - name: Build docs
+        run: uv run poe build_doc
+      - name: Build package
+        run: uv run poe build_package
+      - name: Check package
+        run: uv run poe check_dist
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  build-standalone:
+    name: Build standalone executable
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v8
+      - name: Install Python
+        run: uv python install 3.12
+      - name: Sync dependencies
+        run: uv sync --locked --all-groups
+      - name: Build standalone
+        run: uv run poe build_standalone
+      - name: Upload executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edges-windows-exe
+          path: dist/edges.exe
+          if-no-files-found: error
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: astral-sh/setup-uv@v8
+      - name: Publish to TestPyPI
+        run: |
+          uv publish \
+            --publish-url https://test.pypi.org/legacy/ \
+            --trusted-publishing never \
+            dist/*
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+  release:
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build, build-standalone]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Download executable artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: edges-windows-exe
+          path: exe/
+      - name: Create release and upload artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+            exe/edges.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
