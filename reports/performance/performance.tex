@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Performance Report: ippi-edges}
+\author{IPPI Project}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Goal}
+Measure runtime of edge and contour detection and identify a bottleneck.
+
+\section{Data Sample}
+Describe image subset size, source, and dimensions.
+
+\section{Baseline}
+\begin{tabular}{lrr}
+\toprule
+Metric & Value & Unit \\
+\midrule
+Images processed & 0 & count \\
+Total runtime & 0.0 & s \\
+Average runtime & 0.0 & ms/image \\
+\bottomrule
+\end{tabular}
+
+\section{Optimization}
+Describe what was changed and why it should improve performance.
+
+\section{Results}
+\begin{tabular}{lrr}
+\toprule
+Metric & Before & After \\
+\midrule
+Total runtime (s) & 0.0 & 0.0 \\
+Average runtime (ms/image) & 0.0 & 0.0 \\
+\bottomrule
+\end{tabular}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/runtime_comparison.png}
+\caption{Runtime comparison}
+\end{figure}
+
+\section{Conclusion}
+Summarize the bottleneck and achieved speedup.
+
+\end{document}
