@@ -80,7 +80,7 @@ exclude = [
   "docs",
   "docs/_build",
   "htmlcov",
-  "reports/generated"
+  "reports/generated",
 ]
 format.indent-style = "space"
 format.quote-style = "double"
@@ -148,6 +148,7 @@ ini_options.markers = [ "slow: marks slow tests (deselect with '-m \"not slow\"'
 
 [tool.coverage]
 run.omit = [ "tests/*" ]
+run.relative_files = true
 run.source = [ "src/edges" ]
 report.fail_under = 100
 report.show_missing = true
