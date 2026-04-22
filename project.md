@@ -631,7 +631,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v8.0.0
+      - uses: astral-sh/setup-uv@v8.1.0
       - run: uv sync --locked --all-groups
       - run: uv run poe ci
 ```
