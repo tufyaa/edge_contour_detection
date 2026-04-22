@@ -1,0 +1,223 @@
+[build-system]
+build-backend = "uv_build"
+requires = [ "uv-build>=0.7.20,<0.8" ]
+
+[project]
+name = "ippi-edges"
+version = "0.1.0"
+description = "Batch edge and contour detection for image folders."
+readme = "README.md"
+authors = [ { name = "IPPI Student Project" } ]
+requires-python = ">=3.12"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+  "click>=8.1.7",
+  "numpy>=2",
+  "opencv-python-headless>=4.10.0.84",
+  "pooch>=1.8.2",
+]
+scripts.edges = "edges.console:main"
+
+[dependency-groups]
+dev = [
+  "mdformat>=1",
+  "mdformat-gfm>=0.4.1",
+  "mdformat-myst>=0.2",
+  "mypy>=1.13",
+  "poethepoet>=0.30",
+  "pre-commit>=4.0.1",
+  "pyproject-fmt>=2.5",
+  "rstfmt>=0.0.14",
+  "ruff>=0.8",
+  "twine>=6.0.1",
+  { include-group = "build" },
+  { include-group = "docs" },
+  { include-group = "tests" },
+]
+docs = [
+  "furo>=2024.8.6",
+  "myst-parser>=4",
+  "sphinx>=8.1.3",
+  "sphinx-autoapi>=3.3.2",
+  "sphinx-click>=6",
+  "sphinx-design>=0.6.1",
+  "sphinx-pyproject>=0.3",
+]
+build = [
+  "build>=1.2.2.post1",
+  "pyinstaller>=6.11.1",
+]
+report = [
+  "matplotlib>=3.9.3",
+]
+tests = [
+  "coverage>=7.6.8",
+  "pytest>=8.3.3",
+  "pytest-cov>=6",
+  "pytest-mock>=3.14",
+  "pytest-randomly>=3.16",
+  "pytest-xdist>=3.6.1",
+]
+
+[tool.uv]
+build-backend.module-name = "edges"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+indent-width = 4
+exclude = [
+  ".pytest_cache",
+  ".ruff_cache",
+  ".venv",
+  "build",
+  "dist",
+  "docs",
+  "docs/_build",
+  "htmlcov",
+  "reports/generated"
+]
+format.indent-style = "space"
+format.quote-style = "double"
+lint.select = [ "ALL" ]
+lint.ignore = [
+  "AIR",
+  "ANN401",
+  "COM812",
+  "COM819",
+  "D203",
+  "D213",
+  "DJ",
+  "E501",
+  "FAST",
+  "FIX",
+  "INT",
+  "PLC0415",
+  "PLR0913",
+  "PLR2004",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "Q004",
+  "TC001",
+  "TC002",
+  "TC003",
+  "TC006",
+  "TD",
+]
+lint.per-file-ignores = { "tests/*.py" = [
+  "ANN001",
+  "ANN002",
+  "ANN003",
+  "ANN202",
+  "ARG002",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "INP001",
+  "PLC2701",
+  "PLR0402",
+  "PLR2004",
+  "PT011",
+  "S101",
+  "SLF001",
+] }
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = "src"
+check_untyped_defs = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = false
+exclude = [ "docs/" ]
+overrides = [ { module = [ "cv2", "pooch", "matplotlib" ], ignore_missing_imports = true } ]
+
+[tool.pytest]
+ini_options.pythonpath = [ "src" ]
+ini_options.addopts = "-ra --cov --cov-report=term-missing --no-cov-on-fail"
+ini_options.markers = [ "slow: marks slow tests (deselect with '-m \"not slow\"')" ]
+
+[tool.coverage]
+run.omit = [ "tests/*" ]
+run.source = [ "src/edges" ]
+report.fail_under = 100
+report.show_missing = true
+report.skip_covered = false
+
+[tool.sphinx-pyproject]
+autoapi_dirs = [ "../src/edges" ]
+autoapi_options = [ "members", "show-module-summary", "special-members" ]
+exclude_patterns = [ "_build" ]
+extensions = [
+  "myst_parser",
+  "autoapi.extension",
+  "sphinx_click",
+  "sphinx.ext.napoleon",
+  "sphinx_design",
+]
+html_css_files = [ "custom.css" ]
+html_static_path = [ "_static" ]
+html_theme = "furo"
+source_suffix = { ".md" = "markdown", ".rst" = "restructuredtext" }
+templates_path = [ "_templates" ]
+
+[tool.poe]
+tasks.test = { cmd = "pytest", help = "Run tests with coverage" }
+tasks.test-fast = { cmd = 'pytest -m "not slow"', help = "Run fast tests only" }
+tasks.test-coverage = { cmd = "pytest", help = "Generate .coverage data file" }
+tasks.format_py = { cmd = "ruff format src tests", help = "Format Python sources" }
+tasks.lint_py = { cmd = "ruff check src tests --fix", help = "Lint Python sources" }
+tasks.check_py = { sequence = [
+  { cmd = "ruff format --check src tests" },
+  { cmd = "ruff check src tests" },
+] }
+tasks.format = { sequence = [
+  { ref = "format_toml" },
+  { ref = "format_rst" },
+  { ref = "format_md" },
+  { ref = "format_py" },
+], help = "Format project files" }
+tasks.lint = { sequence = [
+  { ref = "check_py" },
+  { ref = "check_toml" },
+  { ref = "check_rst" },
+  { ref = "check_md" },
+  { ref = "typecheck" },
+], help = "Run linters and static analysis" }
+tasks.format_toml = { cmd = "pyproject-fmt pyproject.toml", help = "Format pyproject.toml" }
+tasks.check_toml = { cmd = "pyproject-fmt pyproject.toml --check", help = "Check pyproject.toml formatting" }
+tasks.format_rst = { cmd = "rstfmt docs/*.rst", help = "Format reStructuredText files" }
+tasks.check_rst = { cmd = "rstfmt --check docs/*.rst", help = "Check reStructuredText formatting" }
+tasks.format_md = { cmd = "mdformat README.md project.md docs/*.md", help = "Format markdown files" }
+tasks.check_md = { cmd = "mdformat --check README.md project.md docs/*.md", help = "Check markdown formatting" }
+tasks.typecheck = { cmd = "mypy src tests", help = "Run static type checks" }
+tasks.build_doc = { sequence = [
+  { cmd = "python -c \"import shutil; shutil.rmtree('docs/_build', ignore_errors=True); shutil.rmtree('docs/autoapi', ignore_errors=True)\"" },
+  { cmd = "python -m sphinx -b html docs docs/_build/html" },
+], help = "Build Sphinx docs" }
+tasks.doc_host = { cmd = "python -m http.server --directory docs/_build/html 8000", help = "Serve built documentation" }
+tasks.process-demo = { cmd = "edges process ../data/sample ../results/demo --method both --threshold auto --contours", help = "Run demo processing outside repo" }
+tasks.build_package = { cmd = "python -m build", help = "Build wheel and sdist" }
+tasks.check_dist = { cmd = "twine check dist/*", help = "Validate distribution artifacts" }
+tasks.build_standalone = { cmd = "pyinstaller --onefile --name edges src/edges/__main__.py", help = "Build standalone executable" }
+tasks.ci.help = "Run full CI checks locally"
+tasks.ci.sequence = [
+  { ref = "check_py" },
+  { ref = "check_toml" },
+  { ref = "check_rst" },
+  { ref = "check_md" },
+  { ref = "typecheck" },
+  { ref = "test-fast" },
+  { ref = "build_doc" },
+  { ref = "build_package" },
+  { ref = "check_dist" },
+]
