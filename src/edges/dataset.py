@@ -45,7 +45,9 @@ def _download_archive(archive_path: Path, target_dir: Path) -> None:
 def _extract_archive(archive_path: Path, target_dir: Path) -> None:
     """Extract dataset archive while rejecting paths outside target_dir."""
     target_root = target_dir.resolve()
-    with tarfile.open(archive_path, "r:gz") as archive:
+    # Berkeley publishes this file with a .tgz name, but the payload may be a plain tar.
+    # "r:*" lets tarfile auto-detect compression instead of assuming gzip only.
+    with tarfile.open(archive_path, "r:*") as archive:
         for member in archive.getmembers():
             member_target = (target_root / member.name).resolve()
             if not member_target.is_relative_to(target_root):
