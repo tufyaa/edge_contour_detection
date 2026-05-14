@@ -53,9 +53,6 @@ build = [
   "build>=1.2.2.post1",
   "pyinstaller>=6.11.1",
 ]
-report = [
-  "matplotlib>=3.9.3",
-]
 tests = [
   "coverage>=7.6.8",
   "pytest>=8.3.3",
@@ -140,7 +137,7 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_unreachable = false
 exclude = [ "docs/" ]
-overrides = [ { module = [ "cv2", "pooch", "matplotlib" ], ignore_missing_imports = true } ]
+overrides = [ { module = [ "cv2", "pooch" ], ignore_missing_imports = true } ]
 
 [tool.pytest]
 ini_options.pythonpath = [ "src" ]

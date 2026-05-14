@@ -10,7 +10,6 @@
    usage
    algorithms
    dataset
-   performance
    cli
 
 .. include:: ../README.md
