@@ -29,12 +29,14 @@ dev = [
   "mdformat-gfm>=0.4.1",
   "mdformat-myst>=0.2",
   "mypy>=1.13",
+  "pip>=26.1.1",
   "poethepoet>=0.30",
   "pre-commit>=4.0.1",
   "pyproject-fmt>=2.5",
   "rstfmt>=0.0.14",
   "ruff>=0.8",
   "twine>=6.0.1",
+  "uv>=0.11.14",
   { include-group = "build" },
   { include-group = "docs" },
   { include-group = "tests" },
@@ -80,7 +82,7 @@ exclude = [
   "docs",
   "docs/_build",
   "htmlcov",
-  "reports/generated"
+  "reports/generated",
 ]
 format.indent-style = "space"
 format.quote-style = "double"
@@ -148,6 +150,7 @@ ini_options.markers = [ "slow: marks slow tests (deselect with '-m \"not slow\"'
 
 [tool.coverage]
 run.omit = [ "tests/*" ]
+run.relative_files = true
 run.source = [ "src/edges" ]
 report.fail_under = 100
 report.show_missing = true
