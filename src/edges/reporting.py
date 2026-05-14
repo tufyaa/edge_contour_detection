@@ -52,50 +52,6 @@ def write_config_json(config: ProcessingConfig, path: Path) -> None:
         json.dump(_json_safe(config.to_dict()), output_file, ensure_ascii=False, indent=2)
 
 
-def plot_processing_times(results: Sequence[ImageResult], path: Path) -> None:
-    """Plot per-image processing time bars."""
-    try:
-        from matplotlib import pyplot as plt
-    except ModuleNotFoundError as exc:
-        msg = "matplotlib is required for plotting; install the 'report' dependency group."
-        raise RuntimeError(msg) from exc
-
-    names = [result.source_path.name for result in results]
-    times = [result.processing_ms for result in results]
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    figure, axis = plt.subplots(figsize=(10, 4))
-    axis.bar(names, times, color="#4c78a8")
-    axis.set_ylabel("ms")
-    axis.set_title("Processing Time Per Image")
-    axis.tick_params(axis="x", rotation=70)
-    figure.tight_layout()
-    figure.savefig(path)
-    plt.close(figure)
-
-
-def plot_contour_counts(results: Sequence[ImageResult], path: Path) -> None:
-    """Plot contour count bars."""
-    try:
-        from matplotlib import pyplot as plt
-    except ModuleNotFoundError as exc:
-        msg = "matplotlib is required for plotting; install the 'report' dependency group."
-        raise RuntimeError(msg) from exc
-
-    names = [result.source_path.name for result in results]
-    counts = [result.contour_count for result in results]
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    figure, axis = plt.subplots(figsize=(10, 4))
-    axis.bar(names, counts, color="#f58518")
-    axis.set_ylabel("count")
-    axis.set_title("Contour Count Per Image")
-    axis.tick_params(axis="x", rotation=70)
-    figure.tight_layout()
-    figure.savefig(path)
-    plt.close(figure)
-
-
 def _json_safe(value: Any) -> Any:
     """Convert potentially non-JSON values to JSON-friendly ones."""
     if isinstance(value, Path):

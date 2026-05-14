@@ -7,7 +7,7 @@ The project follows a layered package layout similar to the reference project:
 - `edges.images`: File-system and image IO.
 - `edges.operators`: Sobel/Laplacian/threshold pure image transforms.
 - `edges.contours`: Contour extraction, drawing, and contour metrics.
-- `edges.reporting`: CSV/JSON output and performance plots.
+- `edges.reporting`: CSV/JSON output and runtime configuration snapshots.
 - `edges.dataset`: BSDS500 download and sample preparation.
 
 ## Processing Flow
