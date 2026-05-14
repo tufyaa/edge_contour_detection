@@ -417,7 +417,6 @@ report = [
 ]
 build = [
   "pyinstaller",
-  "twine",
 ]
 ```
 
@@ -642,16 +641,12 @@ Badges в README:
 
 - tests;
 - coverage;
-- docs;
-- TestPyPI version после публикации.
+- docs.
 
-## Packaging и релизы
-
-TestPyPI:
+## Packaging
 
 ```text
 python -m build
-uv run twine upload --repository testpypi dist/*
 ```
 
 Standalone:
@@ -661,15 +656,6 @@ uv run poe build_standalone
 ```
 
 Для standalone-сборки лучше использовать `opencv-python-headless`, потому что GUI-возможности OpenCV не нужны: проект сохраняет файлы, а не открывает окна.
-
-Артефакты GitHub Release:
-
-- wheel;
-- sdist;
-- standalone executable;
-- архив исходного кода.
-
-Датасет и результаты обработки в релиз не включать.
 
 ## План реализации
 

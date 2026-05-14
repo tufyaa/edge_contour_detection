@@ -35,7 +35,6 @@ dev = [
   "pyproject-fmt>=2.5",
   "rstfmt>=0.0.14",
   "ruff>=0.8",
-  "twine>=6.0.1",
   "uv>=0.11.14",
   { include-group = "build" },
   { include-group = "docs" },
@@ -210,7 +209,6 @@ tasks.build_doc = { sequence = [
 tasks.doc_host = { cmd = "python -m http.server --directory docs/_build/html 8000", help = "Serve built documentation" }
 tasks.process-demo = { cmd = "edges process ../data/sample ../results/demo --method both --threshold auto --contours", help = "Run demo processing outside repo" }
 tasks.build_package = { cmd = "python -m build", help = "Build wheel and sdist" }
-tasks.check_dist = { cmd = "twine check dist/*", help = "Validate distribution artifacts" }
 tasks.build_standalone = { cmd = "pyinstaller --onefile --name edges src/edges/__main__.py", help = "Build standalone executable" }
 tasks.ci.help = "Run full CI checks locally"
 tasks.ci.sequence = [
@@ -222,5 +220,4 @@ tasks.ci.sequence = [
   { ref = "test-fast" },
   { ref = "build_doc" },
   { ref = "build_package" },
-  { ref = "check_dist" },
 ]
