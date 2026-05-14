@@ -196,8 +196,8 @@ tasks.format_toml = { cmd = "pyproject-fmt pyproject.toml", help = "Format pypro
 tasks.check_toml = { cmd = "pyproject-fmt pyproject.toml --check", help = "Check pyproject.toml formatting" }
 tasks.format_rst = { cmd = "rstfmt docs/*.rst", help = "Format reStructuredText files" }
 tasks.check_rst = { cmd = "rstfmt --check docs/*.rst", help = "Check reStructuredText formatting" }
-tasks.format_md = { cmd = "mdformat README.md project.md docs/*.md", help = "Format markdown files" }
-tasks.check_md = { cmd = "mdformat --check README.md project.md docs/*.md", help = "Check markdown formatting" }
+tasks.format_md = { cmd = "mdformat README.md docs/*.md", help = "Format markdown files" }
+tasks.check_md = { cmd = "mdformat --check README.md docs/*.md", help = "Check markdown formatting" }
 tasks.typecheck = { cmd = "mypy src tests", help = "Run static type checks" }
 tasks.build_doc = { sequence = [
   { cmd = "python -c \"import shutil; shutil.rmtree('docs/_build', ignore_errors=True); shutil.rmtree('docs/autoapi', ignore_errors=True)\"" },
